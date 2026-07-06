@@ -15,10 +15,10 @@ export function ZamaFaucet() {
     const amt = MINT_AMOUNT[symbol.replace("c", "")] ?? 1_000_000n * 10n ** 18n;
     const data = `0x40c10f19${address.slice(2).padStart(64, "0")}${amt.toString(16).padStart(64, "0")}` as `0x${string}`;
     setPending(true);
-    setStatus(`Minting ${symbol}…`);
+      setStatus(`Minting ${symbol}...`);
     try {
       await sendTransactionAsync({ to: tokenAddr, data });
-      setStatus(`${symbol} minted ✓`);
+      setStatus(`${symbol} minted`);
     } catch (e) {
       setStatus(`Failed: ${(e as Error).message.slice(0, 60)}`);
     }
@@ -35,7 +35,7 @@ export function ZamaFaucet() {
       const data = `0x40c10f19${address.slice(2).padStart(64, "0")}${amt.toString(16).padStart(64, "0")}` as `0x${string}`;
       try { await sendTransactionAsync({ to: p.underlying, data }); } catch { /* skip */ }
     }
-    setPending(false); setStatus("All minted ✓"); setTimeout(() => setStatus(""), 4000);
+    setPending(false); setStatus("All minted"); setTimeout(() => setStatus(""), 4000);
   }
 
   if (!isConnected) return null;
