@@ -1,74 +1,211 @@
-# Confidex
+# Minimal Landing Page Template
 
-> **The Definitive Confidential Wrapper Registry Terminal for the Zama Protocol**
->
-> Zama Developer Program — Mainnet Season 3  
-> **Track**: Bounty Track  
-> **Deadline**: July 07, 2026 (23:59 AOE)  
-> **Network**: Sepolia Testnet
+A premium, production-ready Next.js 16+ landing page template with a clean, minimal design. Features WebGL shader effects, smooth animations, dark mode, and full accessibility.
 
----
+## ✨ Highlights
 
-## The Problem
+- 🎨 **Minimal Design** - Clean, focused UI with bold typography
+- ✨ **WebGL Dither Cursor** - Unique shader-based cursor effect
+- 🌙 **Dark Mode** - Seamless light/dark theme switching
+- ⚡ **Blazing Fast** - Optimized for Core Web Vitals
+- 📱 **Fully Responsive** - Looks great on all devices
+- ♿ **Accessible** - WCAG 2.1 AA compliant
+- 🔧 **Easy to Customize** - Centralized configuration file
 
-Zama's Wrappers Registry is an on-chain directory of ERC-20 ↔ ERC-7984 wrapper pairs. It exists, but nobody uses it. Developers spin up their own tokens and wrappers instead of leveraging the official registry. The ecosystem is fragmented.
+## Features
 
-> *"The goal of this bounty is to turn the registry into a product every developer and user can point to."* — Zama Team
+- ✅ **Next.js 16+** with App Router
+- ✅ **TypeScript** (strict mode)
+- ✅ **Tailwind CSS v4** with design tokens
+- ✅ **Smooth Scrolling** via Lenis
+- ✅ **WebGL Effects** via React Three Fiber
+- ✅ **Motion** via motion/react with reduced-motion support
+- ✅ **SEO Ready** - metadata, Open Graph, Twitter cards
+- ✅ **Accessibility** - skip links, focus rings, ARIA labels
+- ✅ **Edge Compatible** - deploy anywhere
 
-## The Solution
+## 🚀 Quick Start
 
-Confidex transforms the Wrappers Registry from an infrastructure contract into a polished, production-ready application. A single dashboard where developers and users can:
-
-1. **Explore** every registered ERC-20 ↔ ERC-7984 pair on Sepolia
-2. **Shield** any registered token (wrap ERC-20 → confidential ERC-7984)
-3. **Unshield** any registered token (unwrap ERC-7984 → public ERC-20)
-4. **Decrypt** confidential balances via EIP-712 user-decryption flow
-5. **Faucet** — mint test tokens for any official cTokenMock pair
-
----
-
-## Why This Wins — The Monopoly Edge
-
-The Bounty Track judges on **6 criteria**. Here's how Confidex dominates each:
-
-| Criterion | Confidex Approach |
-|-----------|------------------|
-| **Coverage** | All 7 Sepolia mock pairs. All 4 operations (wrap, unwrap, decrypt, faucet). 100% requirement coverage. |
-| **Correctness** | SDK-driven. `useShield`, `useUnshield`, `useConfidentialBalance` from `@zama-fhe/react-sdk`. Zero hand-rolled crypto. |
-| **Extensibility** | Registry-driven architecture. New wrapper pairs auto-appear via on-chain reads. |
-| **UX** | Single-page dashboard. RainbowKit multi-wallet. Real-time balance updates. Progress states on every tx. |
-| **Code Quality** | TypeScript strict mode. Modular component tree. Shared config layer. No code duplication. |
-| **Production-Readiness** | Vercel deployment. Environment-based config. Error boundaries. `matchZamaError` for user-friendly errors. |
-
-## Sepolia Testnet — Mock Tokens
-
-All mock tokens on Sepolia have **public `mint(address, uint256)`** with a **1,000,000 token per-call cap**.
-
-| Symbol | Wrapper | Underlying (mintable) |
-|--------|---------|----------------------|
-| cUSDC | `0x7c5BF43B851c1dff1a4feE8dB225b87f2C223639` | `0x9b5Cd13b8eFbB58Dc25A05CF411D8056058aDFfF` |
-| cUSDT | `0x4E7B06D78965594eB5EF5414c357ca21E1554491` | `0xa7dA08FafDC9097Cc0E7D4f113A61e31d7e8e9b0` |
-| cWETH | `0x46208622DA27d91db4f0393733C8BA082ed83158` | `0xff54739b16576FA5402F211D0b938469Ab9A5f3F` |
-| cBRON | `0xaa5612FA27c927a0c7961f5AEFEE5ba3A0F9C891` | `0xFf021fB13cA64e5354c62c954b949a88cfDEb25E` |
-| cZAMA | `0xf2D628d2598aF4eAF94CB76a437Ff86CA78FfbFB` | `0x75355a85c6FB9df5f0C80FF54e8747EEe9a0BF57` |
-| ctGBP | `0xfCE5c7069c5525eF6c8C2b2E35A745bA20a2F7CC` | `0x93c931278A2aad1916783F952f94276eA5111442` |
-| cXAUt | `0xe4FcF848739845BC81Dee1d5352cf3844F0a60C7` | `0x24377AE4AA0C45ecEe71225007f17c5D423dd940` |
-
-**Sepolia Wrappers Registry**: `0x2f0750Bbb0A246059d80e94c454586a7F27a128e`
-
-## Tech Stack
-
-- **Frontend**: Vite + React 19 + TypeScript
-- **SDK**: `@zama-fhe/sdk` v3.2.0 + `@zama-fhe/react-sdk`
-- **Wallet**: wagmi v2 + RainbowKit
-- **Styling**: Tailwind CSS v4 + shadcn/ui
-- **Deployment**: Vercel
-
-## Getting Started
+### 1. Install dependencies
 
 ```bash
-pnpm install
-pnpm dev
+npm install
 ```
 
-Open [http://localhost:5173](http://localhost:5173), connect your wallet (Sepolia), and start using the registry.
+### 2. Start development server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+### 3. Customize your site
+
+Edit `lib/config.ts` to update all text, links, and settings in one place.
+
+## 📁 Project Structure
+
+```
+├── app/
+│   ├── globals.css        # Design tokens & theme colors
+│   ├── layout.tsx         # Root layout with providers
+│   ├── page.tsx           # Landing page
+│   └── ...
+├── components/
+│   ├── hero.tsx           # Hero with dither cursor & rotating cards
+│   ├── features.tsx       # Feature grid with icons
+│   ├── stats.tsx          # Animated statistics counters
+│   ├── testimonials.tsx   # Horizontal scrolling testimonials
+│   ├── how-it-works.tsx   # Steps with animated cards
+│   ├── pricing.tsx        # 2-tier pricing comparison
+│   ├── faq.tsx            # Accordion FAQ section
+│   ├── final-cta.tsx      # Full-width CTA with dither effect
+│   ├── footer.tsx         # Footer with links & contact
+│   ├── dither-cursor.tsx  # WebGL shader cursor effect
+│   └── ...
+├── lib/
+│   ├── config.ts          # ⭐ EDIT THIS - All site config
+│   ├── metadata.ts        # SEO utilities
+│   ├── motion.tsx         # Motion components
+│   └── utils.ts           # Utility functions
+└── public/
+    └── site.webmanifest   # PWA manifest
+```
+
+## 🎨 Customization Guide
+
+### Step 1: Update Site Configuration
+
+Edit `lib/config.ts` - this is your **single source of truth** for all text content:
+
+```ts
+export const siteConfig = {
+  name: "Your Brand",
+  tagline: "Your Tagline",
+  description: "Your description",
+  // ...
+};
+
+export const heroConfig = {
+  headline: {
+    prefix: "Your",
+    accent: "Headline",
+    suffix: "Here",
+  },
+  // ...
+};
+```
+
+### Step 2: Update Theme Colors
+
+Edit `app/globals.css` to change your brand colors:
+
+```css
+:root {
+  --accent: #ffd900;        /* Your primary brand color */
+  --background: #fafafa;    /* Light mode background */
+  --foreground: #0a0a0a;    /* Light mode text */
+}
+
+.dark {
+  --background: #0a0a0a;    /* Dark mode background */
+  --foreground: #fafafa;    /* Dark mode text */
+}
+```
+
+### Step 3: Replace Assets
+
+| File | Purpose | Dimensions |
+|------|---------|------------|
+| `app/icon.svg` | Favicon | 32×32 |
+| `app/apple-icon.svg` | Apple touch icon | 180×180 |
+
+### Step 4: Toggle Features
+
+In `lib/config.ts`, enable/disable features:
+
+```ts
+export const features = {
+  smoothScroll: true,    // Lenis smooth scrolling
+  darkMode: true,        // Dark mode toggle
+  ditherCursor: true,    // WebGL cursor effect
+  statsSection: true,    // Stats/metrics section
+};
+```
+
+## 🎯 Section Components
+
+Each section is a standalone component you can customize or remove:
+
+| Component | Description |
+|-----------|-------------|
+| `Hero` | Full-height hero with animated headline & rotating cards |
+| `HowItWorks` | Three-step process with animated cards |
+| `Features` | Feature grid with Lucide icons |
+| `Stats` | Animated counter statistics |
+| `Testimonials` | Horizontal carousel with fade edge |
+| `Pricing` | Two-tier comparison layout |
+| `FAQ` | Accordion with smooth expand/collapse |
+| `FinalCTA` | Full-width CTA with dither cursor effect |
+| `Footer` | Links, contact info, social icons |
+
+## ✨ Special Features
+
+### WebGL Dither Cursor
+
+The template includes a unique WebGL shader-based cursor effect that creates a dithered trail following mouse movement. It's:
+- GPU-accelerated for smooth 60fps performance
+- Automatically disabled on mobile devices
+- Configurable colors, size, and intensity
+
+### Animated Statistics
+
+The Stats section features numbers that animate from 0 to their target value when scrolled into view, using spring physics for natural motion.
+
+### Smooth Scrolling
+
+Powered by Lenis for buttery-smooth scroll behavior with momentum and easing.
+
+## ♿ Accessibility Features
+
+- Skip-to-content link
+- Proper heading hierarchy (h1 → h2 → h3)
+- ARIA labels on all interactive elements
+- Keyboard navigation support
+- Focus visible rings
+- Reduced motion support
+- Screen reader announcements
+
+## 🚀 Deployment
+
+The template is Edge-compatible and works with:
+
+- **Vercel** (recommended)
+- **Netlify**
+- **Cloudflare Pages**
+- Any static hosting
+
+```bash
+npm run build
+```
+
+## 📜 Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run lint:fix` | Fix ESLint errors |
+| `npm run format` | Format with Prettier |
+| `npm run typecheck` | Run TypeScript checks |
+
+## 📄 License
+
+This template is licensed for use in commercial projects. You may not resell or redistribute the template itself.
+
+---
+
+Built with ❤️ using Next.js, Tailwind CSS, React Three Fiber, and Motion
