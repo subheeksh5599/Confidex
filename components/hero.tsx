@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
-const headlineText = "The Zama Wrappers Registry, Productized";
+const headlineText = "Confidential Tokens, Simplified";
 
 export function Hero(): ReactNode {
   const sectionRef = useRef<HTMLElement>(null);
