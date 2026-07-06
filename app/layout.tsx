@@ -1,7 +1,7 @@
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { Providers } from "@/components/providers";
-import { SkipToContent } from "@/components/skip-to-content";
+
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Web3Providers } from "@/components/web3-providers";
 import { baseMetadata } from "@/lib/metadata";
@@ -30,7 +30,6 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body className={`${geistSans.variable} ${geistMono.variable} relative min-h-screen bg-background font-sans text-foreground antialiased`}>
         <Providers>
           <Web3Providers>
-            <SkipToContent />
             <Header />
             <ThemeSwitch />
             {children}
