@@ -102,7 +102,12 @@ export function Features(): ReactNode {
           <a
             href="/dashboard"
             className="bg-foreground group inline-flex w-full items-center justify-center gap-3 rounded-md py-3 pr-3 pl-5 font-medium text-background transition-all duration-500 ease-out hover:rounded-[50px] sm:w-auto"
-          />
+          >
+            <span>Launch App</span>
+            <span className="bg-background text-foreground flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 group-hover:scale-110">
+              <ChevronRightIcon className="relative left-px h-4 w-4" />
+            </span>
+          </a>
         </motion.div>
 
         {/* Scrolling right column */}

@@ -28,7 +28,7 @@ export function ZamaFaucet() {
 
   async function mintAll(e: FormEvent) {
     e.preventDefault(); if (!address || pending) return;
-    setPending(true); setStatus("Minting all…");
+    setPending(true); setStatus("Minting all...");
     for (const p of SEPOLIA_PAIRS) {
       const sym = p.symbol.replace("c", "");
       const amt = MINT_AMOUNT[sym] ?? 1_000_000n * 10n ** 18n;
@@ -45,7 +45,7 @@ export function ZamaFaucet() {
         <h3 className="text-lg font-semibold">Testnet Faucet</h3>
         <button onClick={mintAll} disabled={pending}
           className="rounded-xl bg-accent px-5 py-2 text-sm font-semibold text-black hover:brightness-110 disabled:opacity-40 transition-all">
-          {pending ? "Minting…" : "Mint All"}
+          {pending ? "Minting..." : "Mint All"}
         </button>
       </div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">

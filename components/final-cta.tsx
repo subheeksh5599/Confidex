@@ -61,7 +61,7 @@ export function FinalCTA(): ReactNode {
           </motion.p>
 
           <motion.a
-            href="#"
+            href="/dashboard"
             className="group inline-flex w-full items-center justify-center gap-3 rounded-md bg-white py-3 pl-5 pr-3 font-medium text-black transition-all duration-500 ease-out hover:rounded-[50px] hover:shadow-lg sm:w-auto"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -69,7 +69,7 @@ export function FinalCTA(): ReactNode {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3, ease: easeOut }}
           >
-            <span>Add to Chrome</span>
+            <span>Launch App</span>
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-black transition-all duration-300 group-hover:scale-110">
               <ChevronRightIcon className="h-4 w-4 relative left-px" />
             </span>

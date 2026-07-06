@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WagmiProvider, createConfig, http } from "wagmi";
+import { WagmiProvider, http } from "wagmi";
 import { sepolia } from "wagmi/chains";
 import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import { ZamaProvider } from "@zama-fhe/react-sdk";

@@ -17,18 +17,18 @@ export function ZamaCard({ pair }: { pair: TokenPair }) {
 
   async function doShield(e: FormEvent) {
     e.preventDefault(); if (!amount) return;
-    setTxStatus("Shielding…");
+    setTxStatus("Shielding...");
     await shield({ amount: BigInt(Math.floor(parseFloat(amount) * 10 ** pair.decimals)) });
-    setAmount(""); setTxStatus("Shielded ✓"); setTimeout(() => setTxStatus(""), 3000);
+    setAmount(""); setTxStatus("Shielded"); setTimeout(() => setTxStatus(""), 3000);
   }
   async function doUnshield(e: FormEvent) {
     e.preventDefault(); if (!amount) return;
-    setTxStatus("Unshielding…");
+    setTxStatus("Unshielding...");
     await unshield({
       amount: BigInt(Math.floor(parseFloat(amount) * 10 ** pair.decimals)),
-      onUnwrapSubmitted: () => setTxStatus("Unwrap submitted…"),
-      onFinalizing: () => setTxStatus("Finalizing…"),
-      onFinalizeSubmitted: () => setTxStatus("Complete ✓"),
+      onUnwrapSubmitted: () => setTxStatus("Unwrap submitted..."),
+      onFinalizing: () => setTxStatus("Finalizing..."),
+      onFinalizeSubmitted: () => setTxStatus("Complete"),
     });
     setAmount(""); setTimeout(() => setTxStatus(""), 4000);
   }
@@ -53,11 +53,11 @@ export function ZamaCard({ pair }: { pair: TokenPair }) {
         <div className="mb-4 rounded-xl bg-background/60 px-4 py-3">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Encrypted Balance</span>
-            {balLoading && <span className="text-xs text-muted-foreground animate-pulse">decrypting…</span>}
+            {balLoading && <span className="text-xs text-muted-foreground animate-pulse">decrypting...</span>}
           </div>
           <div className="mt-1 text-2xl font-bold tabular-nums text-accent">
             {balError ? <span className="text-sm text-muted-foreground">Sign to view</span> :
-             balLoading ? "…" : (balance?.toString() ?? "—")}
+             balLoading ? "..." : (balance?.toString() ?? "--")}
           </div>
         </div>
       )}
@@ -80,7 +80,7 @@ export function ZamaCard({ pair }: { pair: TokenPair }) {
           className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:border-accent focus:outline-none disabled:opacity-40" />
         <button type="submit" disabled={!isConnected || isLoading || !amount}
           className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-black hover:brightness-110 disabled:opacity-40 transition-all">
-          {isLoading ? (mode === "shield" ? "…" : "…") : mode === "shield" ? "Shield" : "Unshield"}
+          {isLoading ? "..." : mode === "shield" ? "Shield" : "Unshield"}
         </button>
       </form>
       {(txStatus || error) && <p className="mt-2 text-xs text-muted-foreground">{txStatus || (error as Error).message}</p>}
