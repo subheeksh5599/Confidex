@@ -2,7 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 import { useAccount, useSendTransaction } from "wagmi";
-import { SEPOLIA_PAIRS, MINT_AMOUNT } from "@/lib/zama";
+import { REGISTRY_SEEDS, MINT_AMOUNTS } from "@/lib/zama";
 
 export function ZamaFaucet() {
   const { isConnected, address } = useAccount();
@@ -10,14 +10,14 @@ export function ZamaFaucet() {
   const [status, setStatus] = useState("");
   const [pending, setPending] = useState(false);
 
-  async function mint(symbol: string, tokenAddr: `0x${string}`) {
+  async function mint(underlying: `0x${string}`, symbol: string) {
     if (!address) return;
-    const amt = MINT_AMOUNT[symbol.replace("c", "")] ?? 1_000_000n * 10n ** 18n;
+    const amt = MINT_AMOUNTS[underlying.toLowerCase()] ?? 1_000_000n * 10n ** 18n;
     const data = `0x40c10f19${address.slice(2).padStart(64, "0")}${amt.toString(16).padStart(64, "0")}` as `0x${string}`;
     setPending(true);
-      setStatus(`Minting ${symbol}...`);
+    setStatus(`Minting ${symbol}...`);
     try {
-      await sendTransactionAsync({ to: tokenAddr, data });
+      await sendTransactionAsync({ to: underlying, data });
       setStatus(`${symbol} minted`);
     } catch (e) {
       setStatus(`Failed: ${(e as Error).message.slice(0, 60)}`);
@@ -29,11 +29,10 @@ export function ZamaFaucet() {
   async function mintAll(e: FormEvent) {
     e.preventDefault(); if (!address || pending) return;
     setPending(true); setStatus("Minting all...");
-    for (const p of SEPOLIA_PAIRS) {
-      const sym = p.symbol.replace("c", "");
-      const amt = MINT_AMOUNT[sym] ?? 1_000_000n * 10n ** 18n;
+    for (const s of REGISTRY_SEEDS) {
+      const amt = MINT_AMOUNTS[s.underlying.toLowerCase()] ?? 1_000_000n * 10n ** 18n;
       const data = `0x40c10f19${address.slice(2).padStart(64, "0")}${amt.toString(16).padStart(64, "0")}` as `0x${string}`;
-      try { await sendTransactionAsync({ to: p.underlying, data }); } catch { /* skip */ }
+      try { await sendTransactionAsync({ to: s.underlying, data }); } catch { /* skip */ }
     }
     setPending(false); setStatus("All minted"); setTimeout(() => setStatus(""), 4000);
   }
@@ -49,10 +48,10 @@ export function ZamaFaucet() {
         </button>
       </div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
-        {SEPOLIA_PAIRS.map((p) => (
-          <button key={p.symbol} onClick={() => mint(p.symbol, p.underlying)} disabled={pending}
+        {REGISTRY_SEEDS.map((s) => (
+          <button key={s.symbol} onClick={() => mint(s.underlying, s.symbol.replace("c", ""))} disabled={pending}
             className="rounded-xl border border-border bg-background px-3 py-2.5 text-center text-sm font-medium hover:border-accent/40 disabled:opacity-40 transition-all">
-            {p.symbol.replace("c", "")}
+            {s.symbol.replace("c", "")}
           </button>
         ))}
       </div>

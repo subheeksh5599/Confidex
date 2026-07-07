@@ -29,9 +29,7 @@ export default function DashboardPage() {
             <h1 className="text-3xl font-bold tracking-tight">Confidex Terminal</h1>
             <div className="mt-1 flex items-center gap-2 text-muted-foreground">
               <span className="text-sm">Zama Protocol Wrappers Registry — Sepolia Testnet</span>
-              <span className="rounded-md bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-accent uppercase tracking-wider">
-                {source} data
-              </span>
+              {!isLoading && <span className="rounded-md bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-accent uppercase tracking-wider">{source}</span>}
             </div>
             <a href={getBlockscoutUrl(ZAMA_REGISTRY)} target="_blank" rel="noopener noreferrer"
               className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-accent transition-colors">
@@ -52,8 +50,8 @@ export default function DashboardPage() {
           <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border px-6 py-20 text-center">
             <h2 className="text-xl font-semibold">Connect your wallet</h2>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
-              Connect to Sepolia testnet to explore the Zama Wrappers Registry,
-              shield tokens, decrypt confidential balances, and use the faucet.
+              Connect to Sepolia testnet to explore the Zama Wrappers Registry.
+              All wrapper addresses are resolved live from the on-chain registry.
             </p>
           </div>
         )}
@@ -62,12 +60,16 @@ export default function DashboardPage() {
           <div className="space-y-8">
             <CustomDecrypt />
             <ZamaFaucet />
-            {isLoading && !pairs.length && (
-              <p className="text-center text-sm text-muted-foreground animate-pulse">Reading registry on-chain...</p>
+            {isLoading && <p className="text-center text-sm text-muted-foreground animate-pulse">Reading WrappersRegistry on-chain...</p>}
+            {!isLoading && pairs.length === 0 && (
+              <div className="rounded-2xl border border-dashed border-border px-6 py-12 text-center">
+                <p className="text-muted-foreground">No wrapper pairs resolved from the on-chain registry.</p>
+                <p className="mt-1 text-xs text-muted-foreground">Add pairs via CUSTOM_PAIRS in lib/zama.ts or ensure the registry contract is accessible.</p>
+              </div>
             )}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {pairs.map((pair) => (
-                <ZamaCard key={pair.symbol} pair={pair} />
+                <ZamaCard key={pair.underlying} pair={pair} />
               ))}
             </div>
           </div>

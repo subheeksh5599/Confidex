@@ -76,7 +76,7 @@ export function ZamaCard({ pair }: { pair: TokenPair }) {
           <span className="ml-2 text-xs text-muted-foreground">{pair.name}</span>
         </div>
         <span className="rounded-md bg-background/60 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
-          {pair.source}
+          onchain
         </span>
       </div>
       <div className="mb-1 flex gap-2 text-[10px] text-muted-foreground">

@@ -2,31 +2,30 @@
 
 import { useReadContracts } from "wagmi";
 import { sepolia } from "wagmi/chains";
-import { ZAMA_REGISTRY, REGISTRY_ABI, buildLocalPairs, type TokenPair } from "@/lib/zama";
-
-const UNDERLYINGS = buildLocalPairs().map((p) => p.underlying);
+import { ZAMA_REGISTRY, REGISTRY_ABI, REGISTRY_SEEDS, CUSTOM_PAIRS, ZERO_ADDRESS, type TokenPair } from "@/lib/zama";
 
 export function useRegistryPairs() {
   const { data, isLoading } = useReadContracts({
-    contracts: UNDERLYINGS.map((underlying) => ({
+    contracts: [...REGISTRY_SEEDS, ...CUSTOM_PAIRS].map((s) => ({
       address: ZAMA_REGISTRY,
       abi: REGISTRY_ABI,
       functionName: "getConfidentialToken",
-      args: [underlying],
+      args: [s.underlying],
       chainId: sepolia.id,
     })),
   });
 
-  const localPairs = buildLocalPairs();
-  if (!data) return { pairs: localPairs, isLoading, source: "local" as const };
+  const allSeeds = [...REGISTRY_SEEDS, ...CUSTOM_PAIRS];
+  const pairs: TokenPair[] = [];
 
-  const merged: TokenPair[] = localPairs.map((lp, i) => {
-    const onchainResult = data[i];
-    const onchainWrapper = onchainResult?.result as string | undefined;
-    const wrapper = onchainWrapper && onchainWrapper !== "0x0000000000000000000000000000000000000000" ? (onchainWrapper as `0x${string}`) : lp.wrapper;
-    const source = onchainResult?.status === "success" ? ("onchain" as const) : ("local" as const);
-    return { ...lp, wrapper, source };
+  if (!data) return { pairs, isLoading, source: "loading" as const };
+
+  allSeeds.forEach((seed, i) => {
+    const result = data[i];
+    const wrapper = (result?.result as string | undefined) ?? ZERO_ADDRESS;
+    if (wrapper === ZERO_ADDRESS) return;
+    pairs.push({ symbol: seed.symbol, name: seed.name, decimals: seed.decimals, underlying: seed.underlying, wrapper: wrapper as `0x${string}` });
   });
 
-  return { pairs: merged, isLoading, source: "hybrid" as const };
+  return { pairs, isLoading, source: "onchain" as const };
 }
