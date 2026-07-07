@@ -6,23 +6,47 @@ import { sepolia } from "wagmi/chains";
 import { useConfidentialBalance } from "@zama-fhe/react-sdk";
 import { getBlockscoutUrl, truncateAddress } from "@/lib/zama";
 
-export function CustomDecrypt() {
-  const { isConnected, address } = useAccount();
-  const chainId = useChainId();
-  const [tokenAddr, setTokenAddr] = useState("");
-  const [queryAddr, setQueryAddr] = useState("");
-  const { data: balance, isLoading, error } = useConfidentialBalance({ address: queryAddr as `0x${string}`, account: queryAddr ? address : undefined });
-  const wrongNetwork = isConnected && chainId !== sepolia.id;
-
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    const val = tokenAddr.trim();
-    if (val.startsWith("0x") && val.length === 42) setQueryAddr(val.toLowerCase());
-  }
+function DecryptResult({ tokenAddr }: { tokenAddr: `0x${string}` }) {
+  const { address } = useAccount();
+  const { data: balance, isLoading, error } = useConfidentialBalance({ address: tokenAddr, account: address });
 
   const errorMsg = error ? ((error as Error).message?.includes("user rejected") || (error as Error).message?.includes("User denied")
     ? "Signature rejected in wallet."
     : (error as Error).message.slice(0, 80)) : null;
+
+  return (
+    <div className="mt-4 rounded-xl bg-background/60 px-4 py-3">
+      <div className="flex items-center justify-between">
+        <a href={getBlockscoutUrl(tokenAddr)} target="_blank" rel="noopener noreferrer" className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-accent transition-colors">
+          {truncateAddress(tokenAddr)}
+        </a>
+        {isLoading && <span className="text-xs text-muted-foreground animate-pulse">decrypting...</span>}
+      </div>
+      <div className="mt-1 text-2xl font-bold tabular-nums text-accent">
+        {errorMsg ? <span className="text-sm text-red-400">{errorMsg}</span> :
+         isLoading ? "..." : (balance?.toString() ?? "--")}
+      </div>
+    </div>
+  );
+}
+
+export function CustomDecrypt() {
+  const { isConnected } = useAccount();
+  const chainId = useChainId();
+  const [tokenAddr, setTokenAddr] = useState("");
+  const [queryAddr, setQueryAddr] = useState<`0x${string}` | null>(null);
+  const wrongNetwork = isConnected && chainId !== sepolia.id;
+  const [loading, setLoading] = useState(false);
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    const val = tokenAddr.trim();
+    if (val.startsWith("0x") && val.length === 42) {
+      setQueryAddr(val.toLowerCase() as `0x${string}`);
+      setLoading(true);
+      setTimeout(() => setLoading(false), 500);
+    }
+  }
 
   return (
     <div className="rounded-2xl border border-border bg-muted/30 p-6 backdrop-blur-sm">
@@ -41,32 +65,19 @@ export function CustomDecrypt() {
           value={tokenAddr}
           onChange={(e) => setTokenAddr(e.target.value)}
           placeholder="Paste any ERC-7984 token address..."
-          disabled={!isConnected || isLoading}
+          disabled={!isConnected || loading}
           className="flex-1 rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm placeholder:text-muted-foreground/50 focus:border-accent focus:outline-none disabled:opacity-40"
         />
         <button
           type="submit"
-          disabled={!isConnected || isLoading || !tokenAddr.trim() || wrongNetwork}
+          disabled={!isConnected || loading || !tokenAddr.trim() || wrongNetwork}
           className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-black hover:brightness-110 disabled:opacity-40 transition-all"
         >
-          {isLoading ? "Decrypting..." : "Decrypt"}
+          {loading ? "Decrypting..." : "Decrypt"}
         </button>
       </form>
 
-      {queryAddr && (
-        <div className="mt-4 rounded-xl bg-background/60 px-4 py-3">
-          <div className="flex items-center justify-between">
-            <a href={getBlockscoutUrl(queryAddr)} target="_blank" rel="noopener noreferrer" className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-accent transition-colors">
-              {truncateAddress(queryAddr)}
-            </a>
-            {isLoading && <span className="text-xs text-muted-foreground animate-pulse">decrypting...</span>}
-          </div>
-          <div className="mt-1 text-2xl font-bold tabular-nums text-accent">
-            {errorMsg ? <span className="text-sm text-red-400">{errorMsg}</span> :
-             isLoading ? "..." : (balance?.toString() ?? "--")}
-          </div>
-        </div>
-      )}
+      {queryAddr && <DecryptResult tokenAddr={queryAddr} />}
     </div>
   );
 }
