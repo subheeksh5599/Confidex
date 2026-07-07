@@ -4,9 +4,27 @@ export interface TokenPair {
   wrapper: `0x${string}`;
   underlying: `0x${string}`;
   decimals: number;
+  source: "onchain" | "local";
 }
 
 export const ZAMA_REGISTRY = "0x2f0750Bbb0A246059d80e94c454586a7F27a128e";
+
+export const REGISTRY_ABI = [
+  {
+    type: "function",
+    name: "getConfidentialToken",
+    inputs: [{ name: "erc20", type: "address", internalType: "address" }],
+    outputs: [{ name: "confidentialToken", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getUnderlyingToken",
+    inputs: [{ name: "wrapper", type: "address", internalType: "address" }],
+    outputs: [{ name: "underlyingToken", type: "address", internalType: "address" }],
+    stateMutability: "view",
+  },
+] as const;
 
 const SEPOLIA_UNDERLYINGS = [
   { symbol: "cUSDC", name: "Confidential USDC Mock", underlying: "0x9b5Cd13b8eFbB58Dc25A05CF411D8056058aDFfF", decimals: 6 },
@@ -28,10 +46,14 @@ const KNOWN_WRAPPERS: Record<string, `0x${string}`> = {
   "0x24377AE4AA0C45ecEe71225007f17c5D423dd940": "0xe4FcF848739845BC81Dee1d5352cf3844F0a60C7",
 };
 
-export const SEPOLIA_PAIRS: TokenPair[] = SEPOLIA_UNDERLYINGS.map((u) => {
-  const wrapper = KNOWN_WRAPPERS[u.underlying.toLowerCase()];
-  return { symbol: u.symbol, name: u.name, decimals: u.decimals, underlying: u.underlying as `0x${string}`, wrapper: wrapper ?? u.underlying as `0x${string}` };
-});
+export function buildLocalPairs(): TokenPair[] {
+  return SEPOLIA_UNDERLYINGS.map((u) => {
+    const wrapper = KNOWN_WRAPPERS[u.underlying.toLowerCase()];
+    return { symbol: u.symbol, name: u.name, decimals: u.decimals, underlying: u.underlying as `0x${string}`, wrapper: wrapper ?? u.underlying as `0x${string}`, source: "local" as const };
+  });
+}
+
+export const SEPOLIA_PAIRS: TokenPair[] = buildLocalPairs();
 
 export const MINT_AMOUNT: Record<string, bigint> = {
   USDC: 1_000_000n * 10n ** 6n, USDT: 1_000_000n * 10n ** 6n, WETH: 1000n * 10n ** 18n,

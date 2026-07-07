@@ -98,6 +98,55 @@ The Zama Protocol uses three cryptographic primitives composited together:
 
 Confidex uses **none of this directly**. The `@zama-fhe/react-sdk` v3.2.0 abstracts all FHE cryptography behind React hooks. Zero custom Solidity was written.
 
+## Registry Sourcing (Hybrid Model)
+
+Confidex uses a **hybrid sourcing model** for the Wrappers Registry:
+
+1. **Primary source — On-chain registry**: On load, the app calls `getConfidentialToken(underlying)` on the official `WrappersRegistry` contract at `0x2f0750Bbb0A246059d80e94c454586a7F27a128e` for each known underlying token using `useReadContracts` from wagmi. Verified on-chain wrappers are tagged `onchain` in the UI.
+
+2. **Fallback — Local config**: If the on-chain call fails or the registry is unreachable, the app falls back to `lib/zama.ts` which contains the known wrapper addresses. Pairs resolved from local config are tagged `local`.
+
+3. **Custom pairs**: Developers can add pairs not yet registered on-chain by editing the `SEPOLIA_UNDERLYINGS` array in `lib/zama.ts`. These appear alongside registry pairs. See the guide below.
+
+## How to Add a New ERC-20 / ERC-7984 Pair
+
+Adding a new wrapper pair requires two changes to `lib/zama.ts`. Here is a concrete example for adding a hypothetical `cDAI` wrapper:
+
+### Example: Adding cDAI
+
+1. **Add the token definition** to the `SEPOLIA_UNDERLYINGS` array:
+
+```ts
+{
+  symbol: "cDAI",
+  name: "Confidential DAI Mock",
+  underlying: "0xYOUR_DAI_MOCK_ADDRESS",
+  decimals: 18,
+},
+```
+
+2. **Map the wrapper address** in the `KNOWN_WRAPPERS` record:
+
+```ts
+"0xYOUR_DAI_MOCK_ADDRESS": "0xYOUR_cDAI_WRAPPER_ADDRESS",
+```
+
+3. **Add mint amounts** (optional, for faucet support) in `MINT_AMOUNT`:
+
+```ts
+DAI: 10_000n * 10n ** 18n,
+```
+
+Rebuild and deploy. The new pair appears in the dashboard alongside the 7 official pairs, tagged `local`. If the pair is later added to the on-chain Wrappers Registry, the app auto-resolves the wrapper from the contract and tags it `onchain`.
+
+### For pairs already registered on-chain
+
+If the token is already registered in the official Wrappers Registry, the on-chain `getConfidentialToken()` call resolves it automatically — no code changes needed. The UI adds an `onchain` badge.
+
+### Adding tokens from mainnet
+
+To add Ethereum mainnet pairs, create a `MAINNET_UNDERLYINGS` array and `MAINNET_KNOWN_WRAPPERS` map in `lib/zama.ts`, export a `MAINNET_PAIRS` array, and add a network switcher that reads from the mainnet registry at `0xeb5015fF021DB115aCe010f23F55C2591059bBA0`.
+
 ## Project Structure
 
 ```
@@ -110,7 +159,8 @@ confidex/
 │   └── globals.css             # Tailwind v4 with Zama purple (--accent: #7c3aed)
 ├── components/
 │   ├── web3-providers.tsx      # WagmiProvider → QueryClient → RainbowKit → ZamaProvider
-│   ├── zama-card.tsx           # Per-token card: balance decrypt, shield, unshield
+│   ├── zama-card.tsx           # Per-token card: balance decrypt, shield, unshield, error handling
+│   ├── zama-custom-decrypt.tsx # Decrypt any ERC-7984 balance by pasting a token address
 │   ├── zama-faucet.tsx         # Batch mint all 7 underlying mock tokens
 │   ├── hero.tsx                # Landing hero with character-by-character animation
 │   ├── features.tsx            # 3 feature cards with staggered motion
@@ -119,8 +169,10 @@ confidex/
 │   ├── footer.tsx              # Zama-themed footer with social links
 │   ├── header.tsx              # Navigation with animated menu dropdown
 │   └── ...                     # Supporting components (theme, smooth scroll, motion)
+├── hooks/
+│   └── useRegistry.ts          # On-chain registry reader (wagmi useReadContracts) + local fallback
 ├── lib/
-│   ├── zama.ts                 # 7 Sepolia pairs, registry address, mint amounts, utilities
+│   ├── zama.ts                 # Registry ABI, 7 Sepolia pairs, mint amounts, utilities
 │   ├── config.ts               # Landing page copy, CTA links, social config
 │   ├── metadata.ts             # Next.js metadata, SEO, Open Graph tags
 │   └── utils.ts                # Tailwind class merging (cn)
