@@ -18,12 +18,12 @@ const wagmiConfig = getDefaultConfig({
   appName: "Confidex",
   projectId: "00000000000000000000000000000000",
   chains: [sepolia],
-  transports: { [sepolia.id]: http("https://sepolia.infura.io/v3/00000000000000000000000000000000") },
+  transports: { [sepolia.id]: http("https://ethereum-sepolia-rpc.publicnode.com") },
 });
 
 const chain = {
   ...sepoliaFhe,
-  network: "https://sepolia.infura.io/v3/00000000000000000000000000000000",
+  network: "https://ethereum-sepolia-rpc.publicnode.com",
   relayerUrl: "https://confidex.vercel.app/api/relayer",
 } as const satisfies FheChain;
 
