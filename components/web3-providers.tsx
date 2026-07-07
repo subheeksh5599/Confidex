@@ -24,6 +24,7 @@ const wagmiConfig = getDefaultConfig({
 const chain = {
   ...sepoliaFhe,
   network: "https://ethereum-sepolia-rpc.publicnode.com",
+  relayerUrl: "https://confidex-wheat.vercel.app/api/relayer",
 } as const satisfies FheChain;
 
 const zamaCfg = createZamaConfig({ chains: [chain], wagmiConfig, relayers: { [chain.id]: web() } });
