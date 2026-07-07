@@ -3,6 +3,7 @@
 import { ZamaCard } from "@/components/zama-card";
 import { ZamaFaucet } from "@/components/zama-faucet";
 import { CustomDecrypt } from "@/components/zama-custom-decrypt";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { useRegistryPairs } from "@/hooks/useRegistry";
 import { ZAMA_REGISTRY, truncateAddress, getBlockscoutUrl } from "@/lib/zama";
 import { useAccount, useChainId } from "wagmi";
@@ -18,6 +19,7 @@ export default function DashboardPage() {
   const wrongNetwork = isConnected && chainId !== sepolia.id;
 
   return (
+    <ErrorBoundary>
     <main id="main-content" className="flex-1">
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-10">
         <Link href="/" className="mb-8 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-accent transition-colors">
@@ -76,5 +78,6 @@ export default function DashboardPage() {
         )}
       </section>
     </main>
+    </ErrorBoundary>
   );
 }

@@ -4,7 +4,6 @@ import { useState, type FormEvent } from "react";
 import { useAccount, useChainId } from "wagmi";
 import { sepolia } from "wagmi/chains";
 import { useConfidentialBalance } from "@zama-fhe/react-sdk";
-import { matchZamaError } from "@zama-fhe/sdk";
 import { getBlockscoutUrl, truncateAddress } from "@/lib/zama";
 
 export function CustomDecrypt() {
@@ -21,13 +20,9 @@ export function CustomDecrypt() {
     if (val.startsWith("0x") && val.length === 42) setQueryAddr(val.toLowerCase());
   }
 
-  const errorMsg = error ? matchZamaError(error, {
-    SIGNING_REJECTED: () => "Signature rejected in wallet.",
-    ENCRYPTION_FAILED: () => "Decryption failed — try again.",
-    TRANSACTION_REVERTED: () => "Chain error — check your connection.",
-    KEYPAIR_EXPIRED: () => "Key expired — reconnect wallet.",
-    _: (e) => e.message.slice(0, 80),
-  }) : null;
+  const errorMsg = error ? ((error as Error).message?.includes("user rejected") || (error as Error).message?.includes("User denied")
+    ? "Signature rejected in wallet."
+    : (error as Error).message.slice(0, 80)) : null;
 
   return (
     <div className="rounded-2xl border border-border bg-muted/30 p-6 backdrop-blur-sm">

@@ -4,21 +4,18 @@ import { type FormEvent, useState } from "react";
 import { useAccount, useChainId } from "wagmi";
 import { sepolia } from "wagmi/chains";
 import { useShield, useUnshield, useConfidentialBalance } from "@zama-fhe/react-sdk";
-import { matchZamaError } from "@zama-fhe/sdk";
 import type { TokenPair } from "@/lib/zama";
 import { truncateAddress, getBlockscoutUrl } from "@/lib/zama";
 import { AlertTriangle } from "lucide-react";
 
-function formatZamaError(err: Error | null): string | null {
+function formatError(err: Error | null): string | null {
   if (!err) return null;
-  return matchZamaError(err, {
-    SIGNING_REJECTED: () => "Signature rejected — please confirm in your wallet.",
-    ENCRYPTION_FAILED: () => "Encryption failed — try again or reconnect.",
-    TRANSACTION_REVERTED: () => "Transaction reverted — check your balance.",
-    KEYPAIR_EXPIRED: () => "Key expired — reconnect your wallet.",
-    INSUFFICIENT_ERC20_BALANCE: () => "Insufficient balance to shield.",
-    _: (e) => e.message.slice(0, 100),
-  }) ?? err.message.slice(0, 100);
+  const msg = err.message ?? String(err);
+  if (msg.includes("user rejected") || msg.includes("User denied")) return "Signature rejected — please confirm in your wallet.";
+  if (msg.includes("insufficient")) return "Insufficient balance.";
+  if (msg.includes("revert")) return "Transaction reverted — check your balance.";
+  if (msg.includes("network") || msg.includes("chain")) return "Wrong network — switch to Sepolia.";
+  return msg.slice(0, 100);
 }
 
 export function ZamaCard({ pair }: { pair: TokenPair }) {
@@ -66,7 +63,7 @@ export function ZamaCard({ pair }: { pair: TokenPair }) {
 
   const isLoading = shPending || unPending;
   const error = shError ?? unError;
-  const displayError = formatZamaError(error);
+  const displayError = formatError(error);
 
   return (
     <div className="group rounded-2xl border border-border bg-muted/30 p-5 backdrop-blur-sm transition-all hover:border-accent/20">
